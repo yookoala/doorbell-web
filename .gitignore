@@ -1,3 +1,4 @@
+# Slim framework stock .gitignore
 .idea/
 .vscode/
 /coverage/
@@ -5,3 +6,6 @@
 /logs/*
 !/logs/README.md
 .phpunit.result.cache
+
+# Database file
+/var/db/*.db

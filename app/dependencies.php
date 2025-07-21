@@ -54,8 +54,8 @@ return function (ContainerBuilder $containerBuilder) {
         RevokeApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
         ViewController::class => autowire()->constructor(get(SessionInterface::class), get(PhpRenderer::class), get('basePath')),
         'doorbell_db' => function (ContainerInterface $c) {
-            $dbFile = __DIR__ . '/../var/db/doorbell.db';
-            $pdo = new PDO('sqlite:' . $dbFile);
+            $settings = $c->get(SettingsInterface::class);
+            $pdo = new PDO('sqlite:' . $settings->get('dbPath'));
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $pdo->exec('CREATE TABLE IF NOT EXISTS doorbell_rings (

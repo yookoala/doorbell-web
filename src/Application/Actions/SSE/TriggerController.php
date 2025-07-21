@@ -55,10 +55,13 @@ class TriggerController
             return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
         }
 
-        $stmt = $this->db->prepare('INSERT INTO doorbell_rings (ring_time) VALUES (:time)');
-        $stmt->execute(['time' => time()]);
-        
-        $response->getBody()->write(json_encode(['code' => 200, 'result' => 'Message sent']));
+        $time = time();
+        $stmt = $this->db->prepare('INSERT INTO doorbell_rings (ring_time) VALUES (:ring_time)');
+        $stmt->execute(['ring_time' => $time]);
+        $response->getBody()->write(json_encode([
+            'code' => 200,
+            'result' => ['ring_time' => $time],
+        ]));
         return $response->withHeader('Content-Type', 'application/json');
     }
 }

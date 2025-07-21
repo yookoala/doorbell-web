@@ -78,4 +78,4 @@ That's it! Now go build something cool.
 ## License
 
 This software is licensed under the MIT License. A copy of the license
-is provided in (LICENSE.md)[LICENSE.md] of this folder.
+is provided in [LICENSE.md](LICENSE.md) of this folder.

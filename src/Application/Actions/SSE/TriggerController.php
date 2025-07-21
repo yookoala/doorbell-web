@@ -22,7 +22,35 @@ class TriggerController
 
     public function __invoke(Request $request, Response $response): Response
     {
-        if ($this->session->get('authorized') !== true) {
+        $is_authorized = false;
+        if ($this->session->get('authorized') === true) {
+            $is_authorized = true;
+        }
+
+        if (!$is_authorized) {
+            $apiKey = null;
+            // Check for API key in header
+            $authHeader = $request->getHeaderLine('Authorization');
+            if (preg_match('/^Basic\s+(.*)$/i', $authHeader, $matches)) {
+                $apiKey = $matches[1];
+            }
+
+            // Check for API key in query parameter if not in header
+            if (!$apiKey) {
+                $queryParams = $request->getQueryParams();
+                $apiKey = $queryParams['key'] ?? null;
+            }
+
+            if ($apiKey) {
+                $stmt = $this->db->prepare('SELECT * FROM api_keys WHERE api_key = :api_key AND revoked_at IS NULL');
+                $stmt->execute(['api_key' => $apiKey]);
+                if ($stmt->fetch()) {
+                    $is_authorized = true;
+                }
+            }
+        }
+
+        if (!$is_authorized) {
             $response->getBody()->write(json_encode(['code' => 403, 'error' => 'Unauthorized']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
         }

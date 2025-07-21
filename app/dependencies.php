@@ -9,6 +9,7 @@ use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
+use App\Application\Middleware\SessionMiddleware;
 use Odan\Session\PhpSession;
 use Odan\Session\SessionInterface;
 use Psr\Container\ContainerInterface;
@@ -42,6 +43,7 @@ return function (ContainerBuilder $containerBuilder) {
         SessionInterface::class => function (ContainerInterface $c) {
             return new PhpSession();
         },
+        SessionMiddleware::class => autowire()->constructor(get(SessionInterface::class)),
         PhpRenderer::class => function (ContainerInterface $c) {
             return new PhpRenderer(__DIR__ . '/../templates');
         },

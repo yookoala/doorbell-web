@@ -9,10 +9,13 @@ use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
+use Odan\Session\PhpSession;
+use Odan\Session\SessionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use function DI\autowire;
 use function DI\get;
+use App\Application\Actions\Site\ViewController;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -30,6 +33,10 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
+        SessionInterface::class => function (ContainerInterface $c) {
+            return new PhpSession();
+        },
+        ViewController::class => autowire()->constructor(get(SessionInterface::class)),
         'doorbell_db' => function (ContainerInterface $c) {
             $dbFile = __DIR__ . '/../var/db/doorbell.db';
             $pdo = new PDO('sqlite:' . $dbFile);
@@ -50,6 +57,6 @@ return function (ContainerBuilder $containerBuilder) {
             return $pdo;
         },
         ListenController::class => autowire()->constructor(get('doorbell_db')),
-        TriggerController::class => autowire()->constructor(get('doorbell_db')),
+        TriggerController::class => autowire()->constructor(get('doorbell_db'), get(SessionInterface::class)),
     ]);
 };

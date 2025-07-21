@@ -4,21 +4,29 @@ declare(strict_types=1);
 
 namespace App\Application\Middleware;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Odan\Session\SessionInterface;
+use Odan\Session\SessionManagerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class SessionMiddleware implements Middleware
+final class SessionMiddleware implements MiddlewareInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function process(Request $request, RequestHandler $handler): Response
+    private SessionInterface $session;
+
+    public function __construct(SessionInterface $session)
     {
-        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            session_start();
-            $request = $request->withAttribute('session', $_SESSION);
+        $this->session = $session;
+    }
+
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
+        // Ensure the session is started
+        if ($this->session instanceof SessionManagerInterface and !$this->session->isStarted()) {
+            $this->session->start();
         }
 
         return $handler->handle($request);

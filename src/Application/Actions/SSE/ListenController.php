@@ -21,20 +21,21 @@ class ListenController
     {
         $last_check_time = (int)($request->getQueryParams()['last_check_time'] ?? 0);
 
-        $stmt = $this->db->prepare('SELECT ring_time FROM doorbell_rings WHERE ring_time > :last_check_time ORDER BY ring_time DESC LIMIT 1');
-        $stmt->execute(['last_check_time' => $last_check_time]);
-        $latest_ring = $stmt->fetch();
-
         $response = $response->withHeader('Content-Type', 'text/event-stream')
-                             ->withHeader('Cache-Control', 'no-cache')
-                             ->withHeader('Connection', 'keep-alive');
+                             ->withHeader('Cache-Control', 'no-cache');
 
-        if ($latest_ring) {
-            $response->getBody()->write("data: " . json_encode(['ring_time' => $latest_ring['ring_time']]) . "\n\n");
-        } else {
-            // Send a comment to keep the connection alive if there is no message
-            $response->getBody()->write(": ping\n\n");
+        $stmt = $this->db->prepare('SELECT ring_time FROM doorbell_rings WHERE ring_time > :last_check_time ORDER BY ring_time ASC');
+        $stmt->execute(['last_check_time' => $last_check_time]);
+        $rings = $stmt->fetchAll();
+
+        $body = $response->getBody();
+        foreach ($rings as $ring) {
+            $body->write("data: " . json_encode(['ring_time' => $ring['ring_time']]) . "\n\n");
         }
+
+        // Send a comment to keep the connection alive if there is no message,
+        // and to signal the client to close the connection and poll again.
+        $body->write(": ping\n\n");
         
         return $response;
     }

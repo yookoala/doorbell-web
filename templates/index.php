@@ -86,10 +86,11 @@
                         lastCheckTime = data.ring_time;
                         doorbellSound.play();
                     }
+                } else {
+                    // Reconnect after a short delay on ping
+                    setTimeout(listenForEvents, 1000);
+                    eventSource.close();
                 }
-                // Reconnect after a short delay
-                setTimeout(listenForEvents, 1000);
-                eventSource.close();
             };
             eventSource.onerror = function() {
                 // Reconnect on error

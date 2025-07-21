@@ -9,3 +9,4 @@
 
 # Database file
 /var/db/*.db
+/var/db/*.db_snapshot

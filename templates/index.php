@@ -84,6 +84,10 @@
                     const data = JSON.parse(event.data);
                     if (data.ring_time) {
                         lastCheckTime = data.ring_time;
+                        if (!doorbellSound.paused) {
+                            doorbellSound.pause();
+                            doorbellSound.currentTime = 0;
+                        }
                         doorbellSound.play();
                     }
                 } else {

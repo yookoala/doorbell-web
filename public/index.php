@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
+use DI\ContainerBuilder;
+use Slim\Factory\AppFactory;
 use App\Application\Handlers\HttpErrorHandler;
 use App\Application\Handlers\ShutdownHandler;
 use App\Application\ResponseEmitter\ResponseEmitter;
 use App\Application\Settings\SettingsInterface;
-use DI\ContainerBuilder;
-use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -27,10 +27,6 @@ $settings($containerBuilder);
 $dependencies = require __DIR__ . '/../app/dependencies.php';
 $dependencies($containerBuilder);
 
-// Set up repositories
-$repositories = require __DIR__ . '/../app/repositories.php';
-$repositories($containerBuilder);
-
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
 
@@ -38,6 +34,14 @@ $container = $containerBuilder->build();
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
+
+// Set the base path to allow running in a subdirectory.
+$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+$basePath = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
+$app->setBasePath($basePath);
+
+// Add the base path to the container
+$container->set('basePath', $basePath);
 
 // Register middleware
 $middleware = require __DIR__ . '/../app/middleware.php';

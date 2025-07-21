@@ -21,6 +21,7 @@ use App\Application\Commands\ListApiKeysCommand;
 use App\Application\Commands\SearchApiKeyCommand;
 use App\Application\Commands\UpdateApiKeyCommand;
 use App\Application\Commands\RevokeApiKeyCommand;
+use Slim\Views\PhpRenderer;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -41,12 +42,15 @@ return function (ContainerBuilder $containerBuilder) {
         SessionInterface::class => function (ContainerInterface $c) {
             return new PhpSession();
         },
+        PhpRenderer::class => function (ContainerInterface $c) {
+            return new PhpRenderer(__DIR__ . '/../templates');
+        },
         CreateApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
         ListApiKeysCommand::class => autowire()->constructor(get('doorbell_db')),
         SearchApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
         UpdateApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
         RevokeApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
-        ViewController::class => autowire()->constructor(get(SessionInterface::class)),
+        ViewController::class => autowire()->constructor(get(SessionInterface::class), get(PhpRenderer::class), get('basePath')),
         'doorbell_db' => function (ContainerInterface $c) {
             $dbFile = __DIR__ . '/../var/db/doorbell.db';
             $pdo = new PDO('sqlite:' . $dbFile);

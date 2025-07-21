@@ -21,7 +21,7 @@
             width: calc(100% - 2em);
             max-width: 800px;
             aspect-ratio: 800 / 1000;
-            background-image: url('/assets/door.png');
+            background-image: url('<?= $basePath ?>/assets/door.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -64,7 +64,7 @@
     <div class="door-container">
         <button id="ringButton" class="doorbell-button">🔔</button>
     </div>
-    <audio id="doorbellSound" src="/assets/doorbell.mp3"></audio>
+    <audio id="doorbellSound" src="<?= $basePath ?>/assets/doorbell.mp3"></audio>
 
     <script>
         const ringButton = document.getElementById('ringButton');
@@ -72,13 +72,13 @@
         let lastCheckTime = 0;
 
         ringButton.addEventListener('click', () => {
-            fetch('/api/trigger')
+            fetch('<?= $basePath ?>/api/trigger')
                 .then(response => response.text())
                 .then(data => console.log(data));
         });
 
         function listenForEvents() {
-            const eventSource = new EventSource(`/api/sse?last_check_time=${lastCheckTime}`);
+            const eventSource = new EventSource(`<?= $basePath ?>/api/sse?last_check_time=${lastCheckTime}`);
             eventSource.onmessage = function(event) {
                 if (event.data.startsWith('{')) {
                     const data = JSON.parse(event.data);

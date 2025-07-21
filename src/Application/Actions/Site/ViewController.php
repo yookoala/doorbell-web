@@ -12,16 +12,19 @@ use Slim\Views\PhpRenderer;
 class ViewController
 {
     private SessionInterface $session;
+    private PhpRenderer $renderer;
+    private string $basePath;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(SessionInterface $session, PhpRenderer $renderer, string $basePath)
     {
         $this->session = $session;
+        $this->renderer = $renderer;
+        $this->basePath = $basePath;
     }
 
     public function __invoke(Request $request, Response $response): Response
     {
         $this->session->set('authorized', true);
-        $renderer = new PhpRenderer('../templates');
-        return $renderer->render($response, "index.php");
+        return $this->renderer->render($response, "index.php", ['basePath' => $this->basePath]);
     }
 }

@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use DI\ContainerBuilder;
+
+$containerBuilder = new ContainerBuilder();
+
+// Set up settings
+$settings = require __DIR__ . '/../app/settings.php';
+$settings($containerBuilder);
+
+// Set up dependencies
+$dependencies = require __DIR__ . '/../app/dependencies.php';
+$dependencies($containerBuilder);
+
+$container = $containerBuilder->build();
+
+$application = new Application();
+
+$application->add($container->get(App\Application\Commands\CreateApiKeyCommand::class));
+$application->add($container->get(App\Application\Commands\ListApiKeysCommand::class));
+$application->add($container->get(App\Application\Commands\SearchApiKeyCommand::class));
+$application->add($container->get(App\Application\Commands\UpdateApiKeyCommand::class));
+$application->add($container->get(App\Application\Commands\RevokeApiKeyCommand::class));
+
+$application->run();

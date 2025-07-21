@@ -16,6 +16,11 @@ use Psr\Log\LoggerInterface;
 use function DI\autowire;
 use function DI\get;
 use App\Application\Actions\Site\ViewController;
+use App\Application\Commands\CreateApiKeyCommand;
+use App\Application\Commands\ListApiKeysCommand;
+use App\Application\Commands\SearchApiKeyCommand;
+use App\Application\Commands\UpdateApiKeyCommand;
+use App\Application\Commands\RevokeApiKeyCommand;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -36,6 +41,11 @@ return function (ContainerBuilder $containerBuilder) {
         SessionInterface::class => function (ContainerInterface $c) {
             return new PhpSession();
         },
+        CreateApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
+        ListApiKeysCommand::class => autowire()->constructor(get('doorbell_db')),
+        SearchApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
+        UpdateApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
+        RevokeApiKeyCommand::class => autowire()->constructor(get('doorbell_db')),
         ViewController::class => autowire()->constructor(get(SessionInterface::class)),
         'doorbell_db' => function (ContainerInterface $c) {
             $dbFile = __DIR__ . '/../var/db/doorbell.db';

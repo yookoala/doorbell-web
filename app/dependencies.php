@@ -39,6 +39,14 @@ return function (ContainerBuilder $containerBuilder) {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 ring_time INTEGER NOT NULL
             )');
+            $pdo->exec('CREATE TABLE IF NOT EXISTS api_keys (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                api_key TEXT NOT NULL UNIQUE,
+                name TEXT NOT NULL,
+                remark TEXT,
+                created_at INTEGER NOT NULL,
+                revoked_at INTEGER
+            )');
             return $pdo;
         },
         ListenController::class => autowire()->constructor(get('doorbell_db')),

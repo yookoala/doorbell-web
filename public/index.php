@@ -12,6 +12,12 @@ use Slim\Factory\ServerRequestCreatorFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// Load environment variables from .env file
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+    $dotenv->load();
+}
+
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
 
@@ -36,8 +42,13 @@ $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
 
 // Set the base path to allow running in a subdirectory.
-$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-$basePath = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
+$basePath = '';
+if (isset($_ENV['BASE_PATH'])) {
+    $basePath = $_ENV['BASE_PATH'];
+} else {
+    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+    $basePath = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
+}
 $app->setBasePath($basePath);
 
 // Add the base path to the container

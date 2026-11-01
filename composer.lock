@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "55e97c6118b7a7e09f1788cda8e3f224",
+    "content-hash": "14edaf9c2b0a307c7f85da09336698a8",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -339,27 +339,27 @@
         },
         {
             "name": "odan/session",
-            "version": "6.3.0",
+            "version": "6.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/odan/session.git",
-                "reference": "632366f11acb70cdfdcff1280684584a36d6b59c"
+                "reference": "4beb2b897d2fbb71619c6c760cc022ab61ac07f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/odan/session/zipball/632366f11acb70cdfdcff1280684584a36d6b59c",
-                "reference": "632366f11acb70cdfdcff1280684584a36d6b59c",
+                "url": "https://api.github.com/repos/odan/session/zipball/4beb2b897d2fbb71619c6c760cc022ab61ac07f4",
+                "reference": "4beb2b897d2fbb71619c6c760cc022ab61ac07f4",
                 "shasum": ""
             },
             "require": {
-                "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
                 "psr/http-message": "^1 || ^2",
                 "psr/http-server-handler": "^1",
                 "psr/http-server-middleware": "^1"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3",
-                "middlewares/utils": "^3",
+                "middlewares/utils": "^3 || ^4",
                 "nyholm/psr7": "^1.5",
                 "phpstan/phpstan": "^2",
                 "phpunit/phpunit": "^11",
@@ -383,9 +383,9 @@
             ],
             "support": {
                 "issues": "https://github.com/odan/session/issues",
-                "source": "https://github.com/odan/session/tree/6.3.0"
+                "source": "https://github.com/odan/session/tree/6.5.1"
             },
-            "time": "2024-12-15T13:21:05+00:00"
+            "time": "2026-02-05T20:06:59+00:00"
         },
         {
             "name": "php-di/invoker",
@@ -5400,5 +5400,5 @@
         "ext-json": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
